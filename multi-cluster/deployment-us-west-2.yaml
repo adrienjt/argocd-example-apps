@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world-us-west-2
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: hello-world
+      region: us-west-2
+  template:
+    metadata:
+      labels:
+        app: hello-world
+        region: us-west-2
+    spec:
+      nodeSelector:
+        failure-domain.beta.kubernetes.io/region: us-west-2
+      containers:
+      - image: adamgolab/hello-world
+        name: hello-world
+        env:
+          - name: PORT
+            value: "80"
+          - name: WORLD
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+        ports:
+        - containerPort: 80
